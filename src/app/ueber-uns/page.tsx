@@ -1,199 +1,204 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import Link from 'next/link';
+import Lenis from 'lenis';
 
 export default function UeberUns() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    const lenis = new Lenis({ duration: 0.9, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+    function raf(time: number) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+    return () => { lenis.destroy(); };
+  }, []);
+
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const titleY = useTransform(scrollYProgress, [0, 1], ['0%', '70%']);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9]">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/60 backdrop-blur-md border-b border-[#E0E0E0]/30">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-6 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="flex flex-col gap-1.5 w-6 h-6 justify-center hover:opacity-70 transition-opacity"
-            >
-              <span className="w-full h-0.5 bg-[#8A8A8A]"></span>
-              <span className="w-full h-0.5 bg-[#8A8A8A]"></span>
-              <span className="w-full h-0.5 bg-[#8A8A8A]"></span>
-            </button>
-          </div>
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <a href="/">
-              <h1 className="text-2xl lg:text-3xl tracking-tight text-[#2C2C2C] whitespace-nowrap" style={{ fontFamily: 'Didot, "Bodoni MT", "Noto Serif Display", "Playfair Display", Georgia, serif', fontWeight: '400', letterSpacing: '0.05em' }}>
-                STOFFWECHSEL
-              </h1>
-            </a>
-          </div>
+    <div className="min-h-screen bg-white">
+      {/* Nav */}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-12 py-5 bg-[#111111]/90 backdrop-blur-md border-b border-white/10">
+        <Link href="/" className="text-white font-black text-xl tracking-tight" style={{ fontFamily: 'Arial Black, Arial, sans-serif' }}>
+          EMANUEL <span className="text-[#E63329]">MEDIA</span>
+        </Link>
+        <div className="hidden lg:flex items-center gap-8">
+          {[{ label: 'Leistungen', href: '/leistungen' }, { label: 'Über uns', href: '/ueber-uns' }, { label: 'Kontakt', href: '/kontakt' }].map(item => (
+            <Link key={item.href} href={item.href} className="text-[#AAAAAA] hover:text-white text-sm tracking-wider transition-colors font-light">{item.label}</Link>
+          ))}
+          <a href="https://emanuel-media-shop.de" target="_blank" rel="noopener noreferrer"
+            className="px-6 py-3 bg-[#E63329] text-white text-xs font-bold tracking-widest hover:bg-white hover:text-[#E63329] transition-colors">
+            ONLINE-SHOP
+          </a>
         </div>
       </nav>
 
-      {/* Slide-out Menu */}
-      <div 
-        className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          menuOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="p-8">
-          <div className="flex justify-between items-center mb-12">
-            <h2 className="text-xl tracking-wide text-[#5A5A5A]" style={{ fontFamily: 'Georgia, serif' }}>MENÜ</h2>
-            <button 
-              onClick={() => setMenuOpen(false)}
-              className="text-[#8A8A8A] hover:text-[#5A5A5A] transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <nav className="space-y-6">
-            <a href="/" className="block text-lg font-light text-[#5A5A5A] hover:text-[#8A8A8A] transition-colors tracking-wide">NEUHEITEN</a>
-            <a href="/" className="block text-lg font-light text-[#5A5A5A] hover:text-[#8A8A8A] transition-colors tracking-wide">SHOP</a>
-            <a href="/" className="block text-lg font-light text-[#5A5A5A] hover:text-[#8A8A8A] transition-colors tracking-wide">SALE</a>
-            <a href="/" className="block text-lg font-light text-[#5A5A5A] hover:text-[#8A8A8A] transition-colors tracking-wide">INSPIRATION</a>
-            <a href="/" className="block text-lg font-light text-[#5A5A5A] hover:text-[#8A8A8A] transition-colors tracking-wide">LIEBLINGSLOOKS</a>
-            <a href="/labels" className="block text-lg font-light text-[#5A5A5A] hover:text-[#8A8A8A] transition-colors tracking-wide">LABELS</a>
-          </nav>
-          <div className="absolute bottom-8 left-8 right-8 pt-8 border-t border-[#E0E0E0]">
-            <div className="space-y-3 text-sm text-[#8A8A8A]">
-              <a href="/ueber-uns" className="block hover:text-[#5A5A5A] transition-colors">Über uns</a>
-              <a href="/impressum" className="block hover:text-[#5A5A5A] transition-colors">Impressum</a>
-              <a href="/datenschutz" className="block hover:text-[#5A5A5A] transition-colors">Datenschutz</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Overlay */}
-      {menuOpen && (
-        <div 
-          className="fixed inset-0 bg-black/30 z-40 backdrop-blur-sm"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-
       {/* Hero */}
-      <section className="relative w-full mt-20">
-        <div className="relative w-full h-[60vh] bg-[#E0E0E0]">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center text-[#5A5A5A] px-4">
-              <h2 className="text-5xl lg:text-7xl font-light tracking-widest" style={{ fontFamily: 'Georgia, serif', letterSpacing: '0.15em' }}>
-                ÜBER UNS
+      <section ref={heroRef} className="relative h-[70vh] bg-[#111111] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: 'linear-gradient(#E63329 1px, transparent 1px), linear-gradient(90deg, #E63329 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
+        <motion.div className="absolute left-0 top-0 w-4 h-full bg-[#E63329]"
+          initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 1 }} />
+
+        <motion.div className="text-center relative z-10" style={{ y: titleY, opacity: titleOpacity }}>
+          <p className="text-[#E63329] text-xs tracking-[0.4em] font-bold mb-6">WER WIR SIND</p>
+          <h1 className="text-white font-black leading-none tracking-tighter"
+            style={{ fontFamily: 'Arial Black, Arial, sans-serif', fontSize: 'clamp(3.5rem, 10vw, 11rem)' }}>
+            ÜBER <span className="text-[#E63329]">UNS</span>
+          </h1>
+          <p className="text-[#888888] text-lg mt-6">Leidenschaft für Druck seit Jahren</p>
+        </motion.div>
+      </section>
+
+      {/* Intro */}
+      <section className="py-32 bg-white">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.9 }}
+              viewport={{ once: true }}
+            >
+              <p className="text-[#E63329] text-xs tracking-[0.4em] font-bold mb-6">UNSERE GESCHICHTE</p>
+              <h2 className="text-[#111111] text-5xl lg:text-7xl font-black leading-none tracking-tighter mb-8"
+                style={{ fontFamily: 'Arial Black, Arial, sans-serif' }}>
+                DRUCK<br />IST<br /><span className="text-[#E63329]">PASSION</span>
               </h2>
-            </div>
+              <div className="w-16 h-1 bg-[#E63329] mb-8" />
+              <p className="text-[#555555] text-lg leading-relaxed font-light mb-4">
+                Emanuel Media ist eine inhabergeführte Druckerei in Saarlouis-Roden – mitten im Herzen des Saarlandes.
+                Geleitet von <strong className="text-[#111111] font-bold">Annette Emanuel-Decker</strong> mit echter Leidenschaft für Druck und persönlichen Service.
+              </p>
+              <p className="text-[#555555] text-lg leading-relaxed font-light">
+                Was uns auszeichnet: Wir sind keine anonyme Online-Druckerei. Wir beraten persönlich, denken mit und liefern – auch bei kleinen Auflagen und kurzfristigen Projekten.
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="grid grid-cols-2 gap-6"
+              initial={{ opacity: 0, x: 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.9 }}
+              viewport={{ once: true }}
+            >
+              {[
+                { title: 'PERSÖNLICH', desc: 'Direkte Beratung – kein Callcenter, keine Warteschleifen' },
+                { title: 'SCHNELL', desc: 'Kurze Wege, kurze Lieferzeiten' },
+                { title: 'KOMPETENT', desc: 'Druck & Design aus einer Hand' },
+                { title: 'FAIR', desc: 'Transparente Preise ohne Überraschungen' },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  className="bg-[#111111] p-8 border-b-4 border-[#E63329]"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <h4 className="text-[#E63329] font-black text-sm tracking-widest mb-3">{item.title}</h4>
+                  <p className="text-[#888888] text-sm leading-relaxed font-light">{item.desc}</p>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Content */}
-      <div className="max-w-5xl mx-auto px-6 lg:px-12 py-20">
-        <div className="space-y-16">
-          {/* Über Uns */}
-          <section>
-            <div className="max-w-3xl mx-auto text-center">
-              <p className="text-lg leading-relaxed text-[#5A5A5A] font-light">
-                Wir lieben Kleidung, die Haltung zeigt. Und Menschen, die ihren eigenen Stil haben. Darum findest du bei uns keine Massenware, sondern kuratierte Looks, ausgesuchte Labels und ein Team, das dich ehrlich und individuell berät.
-              </p>
-            </div>
-          </section>
+      {/* Leistungsübersicht Banner */}
+      <section className="bg-[#E63329] py-20 overflow-hidden">
+        <motion.div
+          className="whitespace-nowrap"
+          animate={{ x: [0, '-50%'] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+        >
+          {['TEXTILDRUCK', 'VISITENKARTEN', 'BÜCHER', 'FLYER', 'BESCHRIFTUNG', 'STEMPEL', 'KALENDER', 'DESIGN', 'TEXTILDRUCK', 'VISITENKARTEN', 'BÜCHER', 'FLYER', 'BESCHRIFTUNG', 'STEMPEL', 'KALENDER', 'DESIGN'].map((w, i) => (
+            <span key={i} className="text-white font-black text-5xl lg:text-7xl tracking-tighter mr-12 inline-block"
+              style={{ fontFamily: 'Arial Black, Arial, sans-serif' }}>
+              {w}&nbsp;·&nbsp;
+            </span>
+          ))}
+        </motion.div>
+      </section>
 
-          {/* Philosophie */}
-          <section className="bg-white p-12 lg:p-16">
-            <h3 className="text-3xl font-light tracking-widest text-[#5A5A5A] mb-8 text-center" style={{ fontFamily: 'Georgia, serif', letterSpacing: '0.15em' }}>
-              UNSERE PHILOSOPHIE
-            </h3>
-            <div className="max-w-3xl mx-auto space-y-6 text-[#8A8A8A] leading-relaxed">
-              <p className="text-base font-light">
-                <strong className="text-[#5A5A5A] font-normal">Anprobieren statt anklicken. Spüren statt scrollen.</strong> Wir glauben: Mode ist mehr als ein Bild im Online-Shop. Sie muss sich gut anfühlen. Zu dir passen. Und live wirken.
-              </p>
-              <p className="text-base font-light">
-                Deshalb nehmen wir uns Zeit – für dich, deinen Stil, deine Fragen. Du gehst nicht einfach mit einem neuen Teil. Du gehst mit einem guten Gefühl.
-              </p>
-            </div>
-          </section>
-
-          {/* Team */}
-          <section className="bg-[#F5F5F5] p-12 lg:p-16">
-            <h3 className="text-3xl font-light tracking-widest text-[#5A5A5A] mb-8 text-center" style={{ fontFamily: 'Georgia, serif', letterSpacing: '0.15em' }}>
-              UNSER TEAM
-            </h3>
-            <div className="max-w-3xl mx-auto text-center">
-              <p className="text-base leading-relaxed text-[#8A8A8A] font-light">
-                Wir sind keine Verkäufer. Wir sind Berater mit Mode im Blut. Wir hören zu, schlagen vor – und sagen auch mal, wenn etwas nicht passt. Denn echte Beratung ist ehrlich. Und macht Spaß.
-              </p>
-            </div>
-          </section>
-
-          {/* CTA */}
-          <section className="text-center py-8">
-            <h3 className="text-2xl font-light tracking-widest text-[#5A5A5A] mb-6" style={{ fontFamily: 'Georgia, serif', letterSpacing: '0.15em' }}>
-              BESUCH UNS
-            </h3>
-            <div className="space-y-2 text-sm text-[#8A8A8A] mb-8">
-              <p>Fürstenstraße 15</p>
-              <p>66111 Saarbrücken</p>
-              <p className="mt-4">Tel. 0681-9386388</p>
-            </div>
-            <a href="/" className="inline-block px-10 py-3 border border-[#8A8A8A] text-[#5A5A5A] text-sm font-light tracking-widest hover:bg-[#8A8A8A] hover:text-white transition-colors">
-              ZUR KOLLEKTION
-            </a>
-          </section>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-[#8A8A8A] text-white py-16">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <div>
-              <h4 className="text-sm font-light mb-4">SHOP</h4>
-              <ul className="space-y-2 text-xs font-light text-[#E0E0E0]">
-                <li><a href="/" className="hover:text-white transition-colors">Neue Kollektion</a></li>
-                <li><a href="/" className="hover:text-white transition-colors">Damen</a></li>
-                <li><a href="/" className="hover:text-white transition-colors">Sale</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-light mb-4">UNTERNEHMEN</h4>
-              <ul className="space-y-2 text-xs font-light text-[#E0E0E0]">
-                <li><a href="/ueber-uns" className="hover:text-white transition-colors">Über uns</a></li>
-                <li><a href="/labels" className="hover:text-white transition-colors">Labels</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-light mb-4">KONTAKT</h4>
-              <div className="space-y-2 text-xs font-light text-[#E0E0E0]">
-                <p className="font-normal text-white">Stoffwechsel Patrick Kühle GmbH</p>
-                <p>Fürstenstraße 15</p>
-                <p>66111 Saarbrücken</p>
-                <p className="mt-3">Tel. 0681-9386388</p>
-                <p>
-                  <a href="mailto:mail@stoffwechselpk.de" className="hover:text-white transition-colors">
-                    mail@stoffwechselpk.de
-                  </a>
+      {/* Zahlen */}
+      <section className="py-32 bg-[#111111]">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { number: '6+', label: 'Leistungsbereiche' },
+              { number: '100%', label: 'Persönliche Beratung' },
+              { number: '1', label: 'Standort – direkt vor Ort' },
+              { number: '∞', label: 'Auflagenflexibilität' },
+            ].map((item, i) => (
+              <motion.div
+                key={item.label}
+                className="text-center border border-[#222222] p-8"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: i * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <p className="text-[#E63329] font-black mb-2" style={{ fontFamily: 'Arial Black, Arial, sans-serif', fontSize: 'clamp(3rem, 6vw, 5rem)' }}>
+                  {item.number}
                 </p>
-              </div>
+                <p className="text-[#888888] text-sm tracking-wider font-light">{item.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Adresse */}
+      <section className="py-32 bg-white">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 text-center">
+          <motion.p className="text-[#E63329] text-xs tracking-[0.4em] font-bold mb-6"
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            BESUCHEN SIE UNS
+          </motion.p>
+          <motion.h2
+            className="text-[#111111] font-black leading-none tracking-tighter mb-12"
+            style={{ fontFamily: 'Arial Black, Arial, sans-serif', fontSize: 'clamp(2.5rem, 7vw, 8rem)' }}
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }} viewport={{ once: true }}>
+            FINDEN SIE <span className="text-[#E63329]">UNS</span>
+          </motion.h2>
+          <div className="flex flex-col md:flex-row gap-6 justify-center items-center text-[#555555] text-lg font-light">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-[#E63329]" />
+              <span>Schulstraße 54, 66740 Saarlouis-Roden</span>
             </div>
-            <div>
-              <h4 className="text-sm font-light mb-4">FOLLOW US</h4>
-              <ul className="space-y-2 text-xs font-light text-[#E0E0E0]">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">Instagram</a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">Facebook</a>
-                </li>
-              </ul>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-[#E63329]" />
+              <a href="tel:+4968316456845" className="hover:text-[#E63329] transition-colors">06831 – 6456845</a>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-[#E63329]" />
+              <a href="mailto:info@emanuel-media.de" className="hover:text-[#E63329] transition-colors">info@emanuel-media.de</a>
             </div>
           </div>
-          <div className="border-t border-[#B8B8B8] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs font-light text-[#E0E0E0]">© 2026 Stoffwechsel Patrick Kühle GmbH</p>
-            <div className="flex gap-4 text-xs font-light text-[#E0E0E0]">
-              <a href="/impressum" className="hover:text-white transition-colors">Impressum</a>
-              <a href="/datenschutz" className="hover:text-white transition-colors">Datenschutz</a>
-            </div>
+          <motion.div className="mt-12"
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.3 }} viewport={{ once: true }}>
+            <Link href="/kontakt" className="inline-block px-10 py-4 bg-[#E63329] text-white font-bold tracking-widest text-sm hover:bg-[#111111] transition-colors">
+              NACHRICHT SENDEN
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#111111] text-white py-12 border-t border-[#222222]">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-4">
+          <Link href="/" className="text-white font-black text-xl" style={{ fontFamily: 'Arial Black, Arial, sans-serif' }}>
+            EMANUEL <span className="text-[#E63329]">MEDIA</span>
+          </Link>
+          <p className="text-xs font-light text-[#555555]">© 2026 Emanuel Media · Annette Emanuel-Decker</p>
+          <div className="flex gap-6 text-xs font-light text-[#555555]">
+            <Link href="/impressum" className="hover:text-white transition-colors">Impressum</Link>
+            <Link href="/datenschutz" className="hover:text-white transition-colors">Datenschutz</Link>
           </div>
         </div>
       </footer>

@@ -27,12 +27,12 @@ const SERVICE_WORDS = [
 
 // --- Leistungen Grid anpassen ---
 const LEISTUNGEN_ITEMS = [
-  { title: 'LEISTUNG 1', sub: 'Kurze Beschreibung', color: '#E63329', img: '' },
-  { title: 'LEISTUNG 2', sub: 'Kurze Beschreibung', color: '#111111', img: '' },
-  { title: 'LEISTUNG 3', sub: 'Kurze Beschreibung', color: '#1A1A1A', img: '' },
-  { title: 'LEISTUNG 4', sub: 'Kurze Beschreibung', color: '#E63329', img: '' },
-  { title: 'LEISTUNG 5', sub: 'Kurze Beschreibung', color: '#111111', img: '' },
-  { title: 'LEISTUNG 6', sub: 'Kurze Beschreibung', color: '#222222', img: '' },
+  { title: 'LEISTUNG 1', sub: 'Kurze Beschreibung', color: '#E63329', img: '/9E93C480-D3B0-4C55-96FA-99C1B2F34418_1_201_a.jpeg' },
+  { title: 'LEISTUNG 2', sub: 'Kurze Beschreibung', color: '#111111', img: '/F8A6ABF9-9D6F-4150-A8F1-E80170B5DF2A_1_201_a.jpeg' },
+  { title: 'LEISTUNG 3', sub: 'Kurze Beschreibung', color: '#1A1A1A', img: '/EAC86193-0AB0-4328-9DF4-BC826B5E4101_1_201_a.jpeg' },
+  { title: 'LEISTUNG 4', sub: 'Kurze Beschreibung', color: '#E63329', img: '/BC54E0F5-CBC5-4ECE-9570-E77310ED7126_1_201_a.jpeg' },
+  { title: 'LEISTUNG 5', sub: 'Kurze Beschreibung', color: '#111111', img: '/692540E2-AFBE-43AD-89BA-3A8947C84BC4_1_201_a.jpeg' },
+  { title: 'LEISTUNG 6', sub: 'Kurze Beschreibung', color: '#222222', img: '/CE587E3B-37EE-451E-9B27-1D8068D4580C_1_201_a.jpeg' },
 ];
 
 // --- USP-Karten anpassen ---
@@ -79,8 +79,8 @@ function HeroSection() {
 
         {/* Hintergrundbild – Pfad unten in img src eintragen und den Kommentar entfernen */}
         <motion.div className="absolute inset-0" style={{ scale: bgScale }}>
-          {/* <img src="/dein-bild.jpg" alt="" className="w-full h-full object-cover" /> */}
-          <div className="absolute inset-0 bg-[#111111]" />
+          <img src="/D6C69D06-B386-4386-9CA0-5C80AD993F9D.png" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-[#111111]/60" />
         </motion.div>
 
         <motion.div className="absolute left-0 top-0 w-4 h-full bg-[#E63329]"

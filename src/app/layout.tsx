@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Firmenname – Kurzbeschreibung",
-  description: "Kurze Beschreibung des Unternehmens und der Dienstleistungen.",
+  title: "Demir SpeedConnect – Glasfaser & Tiefbau",
+  description: "Demir SpeedConnect – Ihr Spezialist für Glasfaserverlegung, Spleißen, Tiefbauarbeiten und Hausanschlüsse.",
 };
 
 export default function RootLayout({
